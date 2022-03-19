@@ -56,8 +56,32 @@ async function run() {
         res.send(result)
       })
 
-      // my order get by email id 
-      
+      // delete order 
+      app.delete('/booking/:id', async(req, res) => {
+        const id = req.params.id;
+        const query = {_id: ObjectId(id)}
+        const result = await bookingCollection.deleteOne(query);
+        // console.log('deleted id', result)
+        res.json(result);
+      })
+
+
+      // update api 
+      app.put('/booking/:id', async(req, res)=>{
+        const id = req.params.id;
+        console.log(id)
+        const status=req.body;
+        const filter = { _id: ObjectId(id) };
+        const options = { upsert: true };
+        const updateDoc = {
+            $set: {
+              orderStatus: status.status
+            }
+        };
+        const result = await bookingCollection.updateOne(filter, updateDoc, options);
+        res.json(result);     
+
+    })
 
     } finally {
     //   await client.close();
